@@ -21,8 +21,10 @@ class OccupancyDetectionNet(nn.Module):
 		self.relu = nn.ReLU()
 		self.out_act = nn.Sigmoid()
 
-		# torch.nn.init.xavier_uniform_(self.fc1.weight, gain=np.sqrt(2))
-		# torch.nn.init.xavier_uniform_(self.fc2.weight, gain=np.sqrt(2))
+		# torch.nn.init.xavier_uniform_(self.fc1.weight, gain=1)
+		# torch.nn.init.constant(self.fc1.bias, 0.1)
+		# torch.nn.init.xavier_uniform_(self.fc2.weight, gain=1)
+		# torch.nn.init.constant(self.fc2.bias, 0.1)
 
 	def forward(self, x):
 		out = self.fc1(x)
@@ -30,7 +32,6 @@ class OccupancyDetectionNet(nn.Module):
 		out = self.fc2(out)
 		out = self.out_act(out)
 		return out
-
 
 def percentage_accuracy(actuals, predicted):
 	return accuracy_score(actuals, predicted)
@@ -114,7 +115,7 @@ with open('train_error_data.pkl', 'wb') as fp1:
 	pickle.dump(train_error_data, fp1)
 
 # plots
-generate_train_epoch_plot(train_error_data, lr, base_accuracy)
+generate_train_epoch_plot(train_error_data, lr, base_accuracy, hidden_size)
 
 # Training error
 net.eval()
