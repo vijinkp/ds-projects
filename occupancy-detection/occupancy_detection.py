@@ -10,7 +10,7 @@ from sklearn.metrics import roc_auc_score, precision_recall_curve, accuracy_scor
 
 from utils import generate_train_epoch_plot, get_baseline_performance
 
-torch.manual_seed(752)
+torch.manual_seed(12)
 
 class OccupancyDetectionNet(nn.Module):
 
@@ -44,8 +44,8 @@ test_file = 'test_data.txt'
 batch_size = 100
 input_size = len(predictors)
 output_size = 1
-num_epochs = 20
-hidden_size = 5
+num_epochs = 10
+hidden_size = 1
 lr = 0.001
 #lr_gamma = 0.55
 
@@ -63,7 +63,8 @@ net = OccupancyDetectionNet(input_size, hidden_size, output_size)
 print(net)
 
 # Loss and optimizer
-criterion = nn.BCELoss()
+#criterion = nn.BCELoss()
+criterion = nn.MSELoss()
 optimizer = torch.optim.SGD(net.parameters(), lr=lr)#, momentum=0.8)
 #scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, lr_gamma)
 
@@ -115,7 +116,7 @@ with open('train_error_data.pkl', 'wb') as fp1:
 	pickle.dump(train_error_data, fp1)
 
 # plots
-generate_train_epoch_plot(train_error_data, lr, base_accuracy, hidden_size)
+#generate_train_epoch_plot(train_error_data, lr, base_accuracy, hidden_size)
 
 # Training error
 net.eval()
