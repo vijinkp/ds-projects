@@ -10,14 +10,23 @@ from sklearn.metrics import roc_auc_score, precision_recall_curve, accuracy_scor
 
 from utils import generate_train_epoch_plot, get_baseline_performance
 
-torch.manual_seed(12)
+torch.manual_seed(856)
 
 class OccupancyDetectionNet(nn.Module):
 
-	def __init__(self, input_size, hidden_size, output_size):
+	def __init__(self, input_size, hidden_size, output_size, layer2_hidden_size = None):
 		super(OccupancyDetectionNet, self).__init__()
-		self.fc1 = nn.Linear(input_size, hidden_size)
-		self.fc2 = nn.Linear(hidden_size, output_size)
+		self.layer2_hidden_present = False
+
+		if layer2_hidden_size is None:
+			self.fc1 = nn.Linear(input_size, hidden_size)
+			self.fc2 = nn.Linear(hidden_size, output_size)
+		else:
+			self.layer2_hidden_present = True
+			self.fc1 = nn.Linear(input_size, hidden_size)
+			self.fc2 = nn.Linear(hidden_size, layer2_hidden_size)
+			self.fc3 = nn.Linear(layer2_hidden_size, output_size)
+
 		self.relu = nn.ReLU()
 		self.out_act = nn.Sigmoid()
 
@@ -30,6 +39,9 @@ class OccupancyDetectionNet(nn.Module):
 		out = self.fc1(x)
 		out = self.relu(out)
 		out = self.fc2(out)
+		if self.layer2_hidden_present:
+			out = self.relu(out)
+			out = self.fc3(out)
 		out = self.out_act(out)
 		return out
 
@@ -44,8 +56,9 @@ test_file = 'test_data.txt'
 batch_size = 100
 input_size = len(predictors)
 output_size = 1
-num_epochs = 10
-hidden_size = 1
+num_epochs = 40
+hidden_size = 10
+layer2_hidden_size = 10
 lr = 0.001
 #lr_gamma = 0.55
 
@@ -59,12 +72,12 @@ train_dataloader = DataLoader(train_dataset, batch_size= batch_size, shuffle=Tru
 print('Training data size : {0}'.format(len(train_dataset)))
 
 # initialize network
-net = OccupancyDetectionNet(input_size, hidden_size, output_size)
+net = OccupancyDetectionNet(input_size, hidden_size, output_size, layer2_hidden_size)
 print(net)
 
 # Loss and optimizer
-#criterion = nn.BCELoss()
-criterion = nn.MSELoss()
+criterion = nn.BCELoss()
+#criterion = nn.MSELoss()
 optimizer = torch.optim.SGD(net.parameters(), lr=lr)#, momentum=0.8)
 #scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, lr_gamma)
 
