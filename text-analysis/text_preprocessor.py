@@ -6,14 +6,14 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 import string
+import pickle
 
 def tokenize(data, stopwords = None):
 	# Lower case
 	data = data.lower()
-	data = unicode(data, "utf-8")
 
 	# Punctation removal
-	data = data.translate(None, string.punctuation)
+	data = data.translate(None, string.punctuation) # changes to be done for python 3
 
 	# Tokenization
 	tokenizer = TreebankWordTokenizer()
@@ -29,33 +29,47 @@ def tokenize(data, stopwords = None):
 	return token_list
 
 
+def generate_document_term_matrix(data, root_folder, data_name, stop_words, k=5000):
+
+	print('Generating document term matrix for {0}....'.format(data_name))
+	token_count_map = {}
+
+	# vocabulary of k words based on frequency after stopword word removal, punctuation aremoval and stemming 
+	for text in data.Text:
+		token_list = tokenize(text, stop_words)
+		for token in token_list:
+			if token in token_count_map:
+				token_count_map[token] = token_count_map[token] + 1
+			else:
+				token_count_map[token] = 1
+
+	# sort token_count_map decreasing order of count
+	sorted_item_list = sorted(token_count_map.items(), key=lambda t: t[1], reverse=True)
+	vocabulary = set([x[0] for x in sorted_item_list[0:k]])
+
+	tfidf_vectorizer = TfidfVectorizer(tokenizer=tokenize, min_df=1, analyzer="word", stop_words=english_stops, vocabulary = vocabulary)
+	doc_term_sparse_mat = tfidf_vectorizer.fit_transform(data.Text)
+
+	# saving document term matrix
+	with open('{0}/{1}_doc_term_matrix_{2}.pkl'.format(root_folder,data_name, k), 'wb') as fp:
+		pickle.dump(doc_term_sparse_mat, fp)
+
+	print('Finished generating document term matrix for {0}....'.format(data_name))
+
+
 # main intializations
-stemmer = PorterStemmer()
 english_stops = set(stopwords.words('english'))
 root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 data_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 
 
 # Read data
-#dataset_1 = pd.read_csv('{0}/Dataset-1.csv')
+dataset_1 = pd.read_csv('{0}/Dataset-1.csv'.format(data_folder))
 dataset_2 = pd.read_csv('{0}/Dataset-2.txt'.format(data_folder), sep=':', header=None, names=['TextId', 'Text'])
 
-# Fixed vocabulary selection
-# vocabulary size. Choose top k words from corpus after stopword removal and stemming
-k = 5000
-token_count_map = {}
+#generate_document_term_matrix(dataset_1, root_folder, 'dataset1', english_stops)
+generate_document_term_matrix(dataset_2, root_folder, 'dataset2', english_stops)
 
-# dataset 2
-for text in dataset_2.Text:
-	token_list = tokenize(text, english_stops)
-	for token in token_list:
-		if token in token_count_map:
-			token_count_map[token] = token_count_map[token] + 1
-		else:
-			token_count_map[token] = 1
 
-# sort token_count_map decreasing order of count
-sorted_item_list = sorted(token_count_map.items(), key=lambda t: t[1], reverse=True)
-vocabulary = set([x[0] for x in sorted_item_list[0:k]])
 
-tfidf_vectorizer = TfidfVectorizer(tokenizer=tokenize, min_df=1, analyzer="word", stop_words=english_stops, vocabulary = vocabulary)
+
