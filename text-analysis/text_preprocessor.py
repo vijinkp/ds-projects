@@ -4,19 +4,21 @@ import pandas as pd
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 import string
 import pickle
 from scipy.linalg import svd
 from matplotlib import pyplot as plt
 import seaborn as sns
+from sklearn.decomposition import TruncatedSVD
 
 def tokenize(data, stopwords = None):
 	# Lower case
 	data = data.lower()
 
 	# Punctation removal
-	data = data.translate(None, string.punctuation) # changes to be done for python 3
+	data = data.translate(str.maketrans('', '',  string.punctuation))
 
 	# Tokenization
 	tokenizer = TreebankWordTokenizer()
@@ -27,12 +29,17 @@ def tokenize(data, stopwords = None):
 		token_list = [word for word in token_list if word not in stopwords]
 
 	# Stemming
-	stemmer = PorterStemmer()
-	token_list = [stemmer.stem(word) for word in token_list]
+	# stemmer = PorterStemmer()
+	# token_list = [stemmer.stem(word) for word in token_list]
+
+	# Lemmatization
+	lemmatizer = WordNetLemmatizer()
+	token_list = [lemmatizer.lemmatize(word) for word in token_list]
+
 	return token_list
 
 
-def generate_document_term_matrix(data, root_folder, data_name, stop_words, k=5000):
+def generate_document_term_matrix(data, root_folder, data_name, stop_words, k=50000):
 
 	print('Generating document term matrix for {0}....'.format(data_name))
 	token_count_map = {}
@@ -57,53 +64,54 @@ def generate_document_term_matrix(data, root_folder, data_name, stop_words, k=50
 	with open('{0}/{1}_doc_term_matrix_{2}.pkl'.format(root_folder,data_name, k), 'wb') as fp:
 		pickle.dump(doc_term_sparse_mat, fp)
 
-	print('Finished generating document term matrix for {0}....'.format(data_name))
+	# saving vocabulary
+	with open('{0}/{1}_vocabulary_{2}.pkl'.format(root_folder,data_name, k), 'wb') as fp:
+		pickle.dump(tfidf_vectorizer.vocabulary_, fp) 
 
+	print('Finished generating document term matrix for {0}....'.format(data_name))
 	return doc_term_sparse_mat
 
 
 def plot_document_mat(mat , data_name, save_folder):
-	plt.figure(figsize(12,12))
-	plt.title('Data representation in reduced dimension: {0}'.format(data_name))
-	plt.xlabel('dim 1')
-	plt.ylabel('dim 2')
-	plt.grid()
-	plt.plot()
-	plt.savefig('{0}/{1}_dataplot.png'.format(save_folder, data_name))
+    plt.figure(figsize = (15,12))
+    plt.title('Data representation in reduced dimension: {0}'.format(data_name))
+    plt.xlabel('dim 1')
+    plt.ylabel('dim 2')
+    plt.grid()
+    plt.plot(mat[:, :1], mat[:, 1:], 'ro')
+    for i, txt in enumerate(range(mat.shape[0])):
+        plt.annotate(txt, (mat[:, :1][i],mat[:, 1:][i]))
+    plt.savefig('{0}/{1}_dataplot.png'.format(save_folder, data_name))
+    #plt.show()
 
-
+def svd(data, dim=2):
+	svd = TruncatedSVD(n_components=2, n_iter=7, random_state=42)
+	return svd.fit_transform(doc_term_matrix_d1)
 
 # main intializations
 english_stops = set(stopwords.words('english'))
 root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 data_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 
-
 # Read data
-# dataset_1 = pd.read_csv('{0}/Dataset-1.csv'.format(data_folder))
-dataset_2 = pd.read_csv('{0}/Dataset-2.txt'.format(data_folder), sep=':', header=None, names=['TextId', 'Text'], nrows =250)
+dataset1 = pd.read_csv('{0}/Dataset-1.csv'.format(data_folder))
+dataset2 = pd.read_csv('{0}/Dataset-2.txt'.format(data_folder), sep=':', header=None, names=['TextId', 'Text'])
 
-#generate_document_term_matrix(dataset_1, root_folder, 'dataset1', english_stops)
-sparse_doc_mat_data2 = generate_document_term_matrix(dataset_2, root_folder, 'dataset2', english_stops)
-doc_term_data2 = sparse_doc_mat_data2.toarray()
+doc_term_matrix_d1 = generate_document_term_matrix(dataset1, root_folder, 'dataset1', english_stops)
+doc_term_matrix_d2 = generate_document_term_matrix(dataset2, root_folder, 'dataset2', english_stops)
 
-print('document term matrix shape :{0}'.format(doc_term_data2.shape))
+# document term reduced 2 dimensions
+with open('{0}/{1}_reduced2_document_matrix.pkl'.format(root_folder,'dataset1'), 'wb') as fp:
+		pickle.dump(svd(doc_term_matrix_d1), fp)
 
-# SVD
-U, s, VT = svd(doc_term_data2)
+with open('{0}/{1}_reduced2_document_matrix.pkl'.format(root_folder,'dataset2'), 'wb') as fp:
+		pickle.dump(svd(doc_term_matrix_d2), fp)
 
-# dimension reduction
-no_dim = 2
-sigma = zeros((doc_term_data2.shape[0], doc_term_data2.shape[1]))
-sigma[:doc_term_data2.shape[0], :doc_term_data2.shape[0]] = diag(s)
-sigma = sigma[:, : no_dim]
+# term document reduced 2 dimensions
+with open('{0}/{1}_reduced2_term_matrix.pkl'.format(root_folder,'dataset1'), 'wb') as fp:
+		pickle.dump(svd(doc_term_matrix_d1.T), fp)
 
-reduced_mat = U.dot(sigma)
-print('reduced matrix shape : {0}'.format(reduced_mat.shape))
-
-
-
-
-
+with open('{0}/{1}_reduced2_term_matrix.pkl'.format(root_folder,'dataset2'), 'wb') as fp:
+		pickle.dump(svd(doc_term_matrix_d2.T), fp)
 
 
