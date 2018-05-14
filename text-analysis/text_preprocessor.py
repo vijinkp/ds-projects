@@ -1,4 +1,3 @@
-# https://www.analyticsvidhya.com/blog/2017/01/ultimate-guide-to-understand-implement-natural-language-processing-codes-in-python/
 import numpy as np
 import pandas as pd
 from nltk.tokenize import TreebankWordTokenizer
@@ -36,6 +35,9 @@ def tokenize(data, stopwords = None):
 	lemmatizer = WordNetLemmatizer()
 	token_list = [lemmatizer.lemmatize(word) for word in token_list]
 
+	# remove digits and single letter
+	token_list = [word.strip() for word in token_list if len(word.strip()) > 1]
+
 	return token_list
 
 
@@ -61,11 +63,11 @@ def generate_document_term_matrix(data, root_folder, data_name, stop_words, k=50
 	doc_term_sparse_mat = tfidf_vectorizer.fit_transform(data.Text)
 
 	# saving document term matrix
-	with open('{0}/{1}_doc_term_matrix_{2}.pkl'.format(root_folder,data_name, k), 'wb') as fp:
+	with open('{0}/doc_term_matrix_{1}.pkl'.format(root_folder, k), 'wb') as fp:
 		pickle.dump(doc_term_sparse_mat, fp)
 
 	# saving vocabulary
-	with open('{0}/{1}_vocabulary_{2}.pkl'.format(root_folder,data_name, k), 'wb') as fp:
+	with open('{0}/vocabulary_{1}.pkl'.format(root_folder, k), 'wb') as fp:
 		pickle.dump(tfidf_vectorizer.vocabulary_, fp) 
 
 	print('Finished generating document term matrix for {0}....'.format(data_name))
@@ -93,25 +95,31 @@ english_stops = set(stopwords.words('english'))
 root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 data_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 
+folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
+folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
+
 # Read data
 dataset1 = pd.read_csv('{0}/Dataset-1.csv'.format(data_folder))
 dataset2 = pd.read_csv('{0}/Dataset-2.txt'.format(data_folder), sep=':', header=None, names=['TextId', 'Text'])
 
-doc_term_matrix_d1 = generate_document_term_matrix(dataset1, root_folder, 'dataset1', english_stops)
-doc_term_matrix_d2 = generate_document_term_matrix(dataset2, root_folder, 'dataset2', english_stops)
+doc_term_matrix_d1 = generate_document_term_matrix(dataset1, folder_dataset_1, 'dataset1', english_stops)
+doc_term_matrix_d2 = generate_document_term_matrix(dataset2, folder_dataset_2, 'dataset2', english_stops)
 
 # document term reduced 2 dimensions
-with open('{0}/{1}_reduced2_document_matrix.pkl'.format(root_folder,'dataset1'), 'wb') as fp:
-		pickle.dump(svd(doc_term_matrix_d1), fp)
+# with open('{0}/reduced2_document_matrix.pkl'.format(folder_dataset_1), 'wb') as fp:
+# 		pickle.dump(svd(doc_term_matrix_d1), fp)
 
-with open('{0}/{1}_reduced2_document_matrix.pkl'.format(root_folder,'dataset2'), 'wb') as fp:
-		pickle.dump(svd(doc_term_matrix_d2), fp)
+# with open('{0}/reduced2_document_matrix.pkl'.format(folder_dataset_2), 'wb') as fp:
+# 		pickle.dump(svd(doc_term_matrix_d2), fp)
 
-# term document reduced 2 dimensions
-with open('{0}/{1}_reduced2_term_matrix.pkl'.format(root_folder,'dataset1'), 'wb') as fp:
-		pickle.dump(svd(doc_term_matrix_d1.T), fp)
+# # term document reduced 2 dimensions
+# with open('{0}/reduced2_term_matrix.pkl'.format(folder_dataset_1), 'wb') as fp:
+# 		pickle.dump(svd(doc_term_matrix_d1.T), fp)
 
-with open('{0}/{1}_reduced2_term_matrix.pkl'.format(root_folder,'dataset2'), 'wb') as fp:
-		pickle.dump(svd(doc_term_matrix_d2.T), fp)
+# with open('{0}/reduced2_term_matrix.pkl'.format(folder_dataset_2), 'wb') as fp:
+# 		pickle.dump(svd(doc_term_matrix_d2.T), fp)
+
+
+# document represenation 
 
 
