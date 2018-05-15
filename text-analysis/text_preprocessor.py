@@ -36,7 +36,7 @@ def tokenize(data, stopwords = None):
 	token_list = [lemmatizer.lemmatize(word) for word in token_list]
 
 	# remove digits and single letter
-	token_list = [word.strip() for word in token_list if len(word.strip()) > 1]
+	token_list = [word.strip() for word in token_list if len(word.strip()) > 1 and not word.isdigit() and len(word.strip()) < 25]
 
 	return token_list
 
