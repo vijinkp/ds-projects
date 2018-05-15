@@ -35,7 +35,7 @@ def plot_doc_rep(doc_rep, save_folder):
 
 
 random.seed(9001)
-root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
+root_folder = '/home/vijin/iith/ds-projects/data/text-analysis'
 folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
 folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
 doc_term = 'doc_term_matrix_50000.pkl'

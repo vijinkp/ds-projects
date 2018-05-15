@@ -5,7 +5,19 @@ import random
 from matplotlib import pyplot as plt
 from sklearn.utils.extmath import randomized_svd
 from scipy.sparse.linalg import svds
+from sklearn.decomposition import TruncatedSVD
+from sklearn.metrics.pairwise import euclidean_distances
 
+root_folder = '/home/vijin/iith/ds-projects/data/text-analysis'
+folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
+folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
+doc_term = 'doc_term_matrix_50000.pkl'
+vocab_file = 'vocabulary_50000.pkl'
+near_poly_words = 'near_poly_words.txt'
+n_components = 1500
+polysemous_words = ['absorb', 'acquire', 'admit', 'assume', 'claim', 'conclude', 'cut',
+                  'deny', 'dictate', 'drive', 'edit', 'enjoy', 'fire', 'grasp', 'know', 
+                  'launch', 'explain', 'fall', 'lead', 'meet', 'go']
 
 def plot_svd_reconstruction_error(doc_term_matrix, save_folder, n_components=500):
 	"""
@@ -65,12 +77,16 @@ def visualize_representation(doc_term_matrix, vocabulary, save_folder, no_docume
 	plt.savefig('{0}/svd_visual_plot.png'.format(save_folder))
 	plt.show()
 
-root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
-folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
-folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
-doc_term = 'doc_term_matrix_50000.pkl'
-vocab_file = 'vocabulary_50000.pkl'
-n_components = 1500
+def nearest_polysemous_words(root_folder, polysemous_words, doc_term_matrix, vocabulary, no_components = 250, no_terms=5):
+	inverted_vocab = {v: k for k, v in vocabulary.items()}
+	word_indices = [vocabulary[x] for x in polysemous_words]
+	svd = TruncatedSVD(n_components=no_components, n_iter=10, random_state=42)
+	reduced_matrix = svd.fit_transform(doc_term_matrix.T)
+	near_poly_words_file = open('{0}/{1}'.format(root_folder,near_poly_words), 'w')
+	for i, index in enumerate(word_indices):
+		near_poly_words_file.write('######### Polysemous word : {0} ##########\n'.format(polysemous_words[i]))
+		near_poly_words_file.write('{0}\n'.format([inverted_vocab[x] for x in euclidean_distances(reduced_matrix, reduced_matrix[index].reshape(-1,no_components)).flatten().argsort()[1:6]]))
+	near_poly_words_file.close()
 
 
 def svd_analysis(root_folder):
@@ -87,13 +103,11 @@ def svd_analysis(root_folder):
 	print('Plotting SVD term document representation...')
 	visualize_representation(doc_term_matrix, vocab, root_folder, 100, 100, 'both', 256)
 
+	print('Finding nearest words....')
+	nearest_polysemous_words(root_folder, polysemous_words, doc_term_matrix, vocab)
+
 svd_analysis(folder_dataset_1)
 svd_analysis(folder_dataset_2)
-
-
-
-# polysemy : absorb, acquire, admit, assume, claim, conclude, cut, deny, dictate, drive, edit, enjoy, fire, grasp, know, launch, explain, fall, lead, meet, go
-
 
 
 

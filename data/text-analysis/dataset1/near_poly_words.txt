@@ -1,0 +1,42 @@
+######### Polysemous word : absorb ##########
+['firstorder', '25jan2012163952', '25jan2012163900', '25jan2012164002', '25jan2012164013']
+######### Polysemous word : acquire ##########
+['lite', 'privleges', 'editoris', 'whyis', 'dockerfile']
+######### Polysemous word : admit ##########
+['texture', 'hesitate', 'backedup', 'uh', 'requirementsif']
+######### Polysemous word : assume ##########
+['assuming', 'likely', 'suppose', 'obviously', 'consider']
+######### Polysemous word : claim ##########
+['proof', 'mention', 'upon', 'evidence', 'clearly']
+######### Polysemous word : conclude ##########
+['urlsedit', 'applicationthey', 'theminstalling', 'ol', 'techniqueshow']
+######### Polysemous word : cut ##########
+['anyhow', 'hanging', 'admit', 'proximity', 'mag']
+######### Polysemous word : deny ##########
+['denied', 'egress', 'directive', 'permit', 'override']
+######### Polysemous word : dictate ##########
+['loggingim', 'roomlogging', 'loggedim', 'controlledwhat', 'nonad']
+######### Polysemous word : drive ##########
+['hard', 'flash', 'bitlocker', 'ssd', 'external']
+######### Polysemous word : edit ##########
+['editing', 'edited', 'stackoverflow', 'posting', 'trick']
+######### Polysemous word : enjoy ##########
+['similarif', 'pointofview', 'askhow', 'evercookies', 'goody']
+######### Polysemous word : fire ##########
+['senseif', 'tendency', 'sourcefire', 'classtypepolicyviolation', 'comparision']
+######### Polysemous word : grasp ##########
+['executedwhy', 'injectionsi', 'msise', 'roving', 'triangle']
+######### Polysemous word : know ##########
+['whether', 'far', 'much', 'already', 'anyone']
+######### Polysemous word : launch ##########
+['launched', 'launching', 'replicate', 'executes', 'succeeded']
+######### Polysemous word : explain ##########
+['explanation', 'please', 'confused', 'concept', 'wikipedia']
+######### Polysemous word : fall ##########
+['eliminate', 'qsa', 'dictate', 'albeit', 'violates']
+######### Polysemous word : lead ##########
+['light', 'occur', 'clearly', 'definitely', 'although']
+######### Polysemous word : meet ##########
+['comply', 'satisfy', 'disaster', 'qsa', 'argue']
+######### Polysemous word : go ##########
+['going', 'basically', 'around', 'thats', 'everything']

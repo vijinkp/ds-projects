@@ -1,0 +1,42 @@
+######### Polysemous word : absorb ##########
+['bombay', 'escola', 'diaphysis', 'switchgrass', 'afraid']
+######### Polysemous word : acquire ##########
+['acquires', 'industrialist', 'confident', '4ddts', 'photogrammetric']
+######### Polysemous word : admit ##########
+['bijection', 'isometry', 'vanishes', 'presymplectic', 'involution']
+######### Polysemous word : assume ##########
+['sufficiently', 'arbitrarily', 'jointly', 'straightforward', 'converge']
+######### Polysemous word : claim ##########
+['anyone', 'proceeding', 'whatsoever', 'liable', 'implied']
+######### Polysemous word : conclude ##########
+['similarly', 'surprisingly', 'absent', 'probably', 'concluded']
+######### Polysemous word : cut ##########
+['polygon', 'pcomplete', 'polyhedral', 'lineartime', 'convexity']
+######### Polysemous word : deny ##########
+['chaotically', 'holmes', 'whic', 'lifesaving', 'cutter']
+######### Polysemous word : dictate ##########
+['splexes', 'nkl', 'ehgbox', 'planted', 'abell']
+######### Polysemous word : drive ##########
+['interestingly', 'surprisingly', 'shaping', 'cytoskeletal', 'circuitry']
+######### Polysemous word : edit ##########
+['separator', 'kvalent', 'edgedisjoint', 'equistarable', 'colouring']
+######### Polysemous word : enjoy ##########
+['unsatisfying', 'enjoyable', 'harsanyi', 'playability', 'mario']
+######### Polysemous word : fire ##########
+['vegetation', 'grassland', 'erosion', 'anthropogenic', 'tropical']
+######### Polysemous word : grasp ##########
+['grasping', 'unimanual', 'prehension', 'impenetrable', 'adobe']
+######### Polysemous word : know ##########
+['think', 'never', 'something', 'really', 'want']
+######### Polysemous word : launch ##########
+['roaming', 'knox', 'sriov', 'hacking', 'stolen']
+######### Polysemous word : explain ##########
+['explanation', 'argued', 'explained', 'explains', 'explaining']
+######### Polysemous word : fall ##########
+['falling', 'hundred', 'greatest', 'suffered', 'sport']
+######### Polysemous word : lead ##########
+['resulting', 'therefore', 'consequence', 'directly', 'leading']
+######### Polysemous word : meet ##########
+['offered', 'managing', 'deliver', 'enabling', 'offering']
+######### Polysemous word : go ##########
+['giving', 'helped', 'helping', 'want', 'never']

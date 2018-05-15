@@ -1,0 +1,14 @@
+######### Cluster : 1 ##########
+['fauna', 'onh', 'corroborate', 'elemental', 'destabilization']
+######### Cluster : 2 ##########
+['significantly', 'found', 'significant', 'risk', 'subject']
+######### Cluster : 3 ##########
+['point', 'given', 'knowledge', 'term', 'domain']
+######### Cluster : 4 ##########
+['recorded', 'sensory', 'daily', 'parent', 'contribute']
+######### Cluster : 5 ##########
+['approach', 'information', 'application', 'based', 'problem']
+######### Cluster : 6 ##########
+['wa', 'patient', 'cell', 'study', 'treatment']
+######### Cluster : 7 ##########
+['personal', 'includes', 'generate', 'array', 'core']

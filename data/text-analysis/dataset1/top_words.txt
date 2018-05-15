@@ -1,0 +1,12 @@
+######### Cluster : 1 ##########
+['nonmalicious', 'netbios', 'relevance', 'hive', 'gameserver']
+######### Cluster : 2 ##########
+['attack', 'network', 'question', 'ha', 'could']
+######### Cluster : 3 ##########
+['password', 'user', 'email', 'account', 'hash']
+######### Cluster : 4 ##########
+['certificate', 'key', 'public', 'private', 'server']
+######### Cluster : 5 ##########
+['provider', 'known', 'show', 'approach', 'header']
+######### Cluster : 6 ##########
+['ssl', 'client', 'ca', 'encryption', 'message']

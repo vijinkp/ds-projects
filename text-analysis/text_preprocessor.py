@@ -92,8 +92,8 @@ def svd(data, dim=2):
 
 # main intializations
 english_stops = set(stopwords.words('english'))
-root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
-data_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
+root_folder = '/home/vijin/iith/ds-projects/data/text-analysis'
+data_folder = '/home/vijin/iith/ds-projects/data/text-analysis'
 
 folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
 folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
