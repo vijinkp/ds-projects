@@ -21,7 +21,7 @@ def get_similar_documents(query, doc_rep, k=5):
 	similarity_arr = []
 	for i in range(doc_rep.shape[0]):
 		similarity_arr.append(JSD(query, doc_rep[i]))
-	return np.array(similarity_arr).argsort()[:k]
+	return np.array(similarity_arr).argsort()[:k+1]
 
 def plot_doc_rep(doc_rep, save_folder):
 	plt.figure(figsize = (12,8))
@@ -35,7 +35,7 @@ def plot_doc_rep(doc_rep, save_folder):
 
 
 random.seed(9001)
-root_folder = '/home/vijin/iith/ds-projects/data/text-analysis'
+root_folder = '/home/vparambath/Desktop/iith/IR-Assignment2'
 folder_dataset_1 = '{0}/{1}'.format(root_folder, 'dataset1')
 folder_dataset_2 = '{0}/{1}'.format(root_folder, 'dataset2')
 doc_term = 'doc_term_matrix_50000.pkl'
