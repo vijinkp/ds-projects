@@ -89,3 +89,70 @@ def plot(title, xlabel, ylabel, X_list, Y_list, L_list, save_file):
 #  	list(relu_test_accuracy_75_map.values()), list(relu_test_accuracy_100_map.values())], 
 #  	['Dropout prob : 0.25', 'Dropout prob : 0.50', 'Dropout prob : 0.75', 'Dropout prob : 1.00'], 
 #  	'/home/vparambath/Desktop/iith/ds-projects/data/mnist/test_accuracy_dropout_plot.png')
+
+
+# batch normalization and dropout
+# with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_25_bn_train_accuracy_map.pkl', 'rb') as fp:
+#     relu_train_accuracy_25_bn_map = pickle.load(fp)
+# with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_25_bn_test_accuracy_map.pkl', 'rb') as fp:
+#     relu_test_accuracy_25_bn_map = pickle.load(fp)
+# with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_25_bn_woDP_train_accuracy_map.pkl', 'rb') as fp:
+#     relu_train_accuracy_25_bn_woDP_map = pickle.load(fp)
+# with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_25_bn_woDP_test_accuracy_map.pkl', 'rb') as fp:
+#     relu_test_accuracy_25_bn_woDP_map = pickle.load(fp)
+
+# plot('Train accuracy for Batch Normalization with & without Dropout', '#epochs', 'train accuracy', 
+#  	[list(relu_train_accuracy_25_bn_map.keys()), list(relu_train_accuracy_25_bn_woDP_map.keys())], 
+#  	[list(relu_train_accuracy_25_bn_map.values()), list(relu_train_accuracy_25_bn_woDP_map.values())], 
+#  	['Dropout', 'No Dropout'], 
+#  	'/home/vparambath/Desktop/iith/ds-projects/data/mnist/train_accuracy_bn_dropout_plot.png')
+
+# plot('Test accuracy for Batch Normalization with & without Dropout', '#epochs', 'test accuracy', 
+#  	[list(relu_test_accuracy_25_bn_map.keys()), list(relu_test_accuracy_25_bn_woDP_map.keys())], 
+#  	[list(relu_test_accuracy_25_bn_map.values()), list(relu_test_accuracy_25_bn_woDP_map.values())], 
+#  	['Dropout', 'No Dropout'], 
+#  	'/home/vparambath/Desktop/iith/ds-projects/data/mnist/test_accuracy_bn_dropout_plot.png')
+
+
+# weight initialization comparison
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_normal_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_uniform_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_uniform = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_kaiming_uniform_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_kaiming_uniform = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_kaiming_normal_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_kaiming_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_xavier_normal_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_xavier_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_xavier_uniform_train_accuracy_map.pkl', 'rb') as fp:
+    train_accuracy_xavier_uniform = pickle.load(fp)
+
+plot('Train accuracy for different weight initializations', '#epochs', 'train accuracy', 
+ 	[list(train_accuracy_normal.keys()), list(train_accuracy_uniform.keys()), list(train_accuracy_kaiming_uniform.keys()), 
+ 	list(train_accuracy_kaiming_normal.keys()), list(train_accuracy_xavier_normal.keys()), list(train_accuracy_xavier_uniform.keys())], 
+ 	[list(train_accuracy_normal.values()), list(train_accuracy_uniform.values()), list(train_accuracy_kaiming_uniform.values()), 
+ 	list(train_accuracy_kaiming_normal.values()), list(train_accuracy_xavier_normal.values()), list(train_accuracy_xavier_uniform.values())], 
+ 	['Normal', 'Uniform', 'Kaiming Uniform', 'Kaiming Normal', 'Xavier Normal', 'Xavier Uniform'], 
+ 	'/home/vparambath/Desktop/iith/ds-projects/data/mnist/train_accuracy_weight_init_plot.png')
+
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_normal_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_uniform_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_uniform = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_kaiming_uniform_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_kaiming_uniform = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_kaiming_normal_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_kaiming_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_xavier_normal_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_xavier_normal = pickle.load(fp)
+with open('/home/vparambath/Desktop/iith/ds-projects/data/mnist/relu_20_bn_woDP_xavier_uniform_test_accuracy_map.pkl', 'rb') as fp:
+    test_accuracy_xavier_uniform = pickle.load(fp)
+
+plot('Test accuracy for different weight initializations', '#epochs', 'test accuracy', 
+ 	[list(test_accuracy_normal.keys()), list(test_accuracy_uniform.keys()), list(test_accuracy_kaiming_uniform.keys()), 
+ 	list(test_accuracy_kaiming_normal.keys()), list(test_accuracy_xavier_normal.keys()), list(test_accuracy_xavier_uniform.keys())], 
+ 	[list(test_accuracy_normal.values()), list(test_accuracy_uniform.values()), list(test_accuracy_kaiming_uniform.values()), 
+ 	list(test_accuracy_kaiming_normal.values()), list(test_accuracy_xavier_normal.values()), list(test_accuracy_xavier_uniform.values())], 
+ 	['Normal', 'Uniform', 'Kaiming Uniform', 'Kaiming Normal', 'Xavier Normal', 'Xavier Uniform'], 
+ 	'/home/vparambath/Desktop/iith/ds-projects/data/mnist/test_accuracy_weight_init_plot.png')
