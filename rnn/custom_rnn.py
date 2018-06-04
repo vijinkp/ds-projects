@@ -1,6 +1,14 @@
 # https://github.com/spro/char-rnn.pytorch
 # https://www.cpuheater.com/deep-learning/introduction-to-recurrent-neural-networks-in-pytorch/
 # https://github.com/fastai/fastai/blob/master/courses/dl1/lesson6-rnn.ipynb
+# https://github.com/karpathy/char-rnn
+# https://gist.github.com/karpathy/d4dee566867f8291f086
+# http://karpathy.github.io/2015/05/21/rnn-effectiveness/
+# https://apaszke.github.io/lstm-explained.html
+# https://discuss.pytorch.org/t/implementation-of-multiplicative-lstm/2328/5
+# https://discuss.pytorch.org/t/custom-rnn-implementation/2673
+# https://github.com/jihunchoi/recurrent-batch-normalization-pytorch/blob/master/bnlstm.py
+# https://discuss.pytorch.org/t/coding-rnn-from-scratch/2205
 import glob, unicodedata, string
 import torch
 from torch.autograd import Variable
@@ -11,7 +19,7 @@ import pickle
 torch.manual_seed(777)
 
 class CharRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, model="lstm", n_layers=1):
+    def __init__(self, input_size, hidden_size, output_size, model="rnn", n_layers=1):
         super(CharRNN, self).__init__()
         self.model = model.lower()
         self.input_size = input_size
@@ -19,12 +27,9 @@ class CharRNN(nn.Module):
         self.output_size = output_size
         self.n_layers = n_layers
 
-        #self.encoder = nn.Embedding(input_size, hidden_size)
-        if self.model == "rnn":
-            self.rnn = nn.RNN(input_size, hidden_size, n_layers)
-        elif self.model == "lstm":
-            self.rnn = nn.LSTM(input_size, hidden_size, n_layers)
-        self.decoder = nn.Linear(hidden_size, output_size)
+        self.l_in = nn.Linear(input_size, n_hidden)
+        self.l_hidden = nn.Linear(n_hidden, n_hidden)
+        self.l_out = nn.Linear(n_hidden, output_size)
 
     def forward(self, input, hidden):
         batch_size = input.size(0)
