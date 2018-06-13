@@ -1,14 +1,4 @@
-# https://github.com/spro/char-rnn.pytorch
-# https://www.cpuheater.com/deep-learning/introduction-to-recurrent-neural-networks-in-pytorch/
-# https://github.com/fastai/fastai/blob/master/courses/dl1/lesson6-rnn.ipynb
-# https://github.com/karpathy/char-rnn
-# https://gist.github.com/karpathy/d4dee566867f8291f086
-# http://karpathy.github.io/2015/05/21/rnn-effectiveness/
-# https://apaszke.github.io/lstm-explained.html
-# https://discuss.pytorch.org/t/implementation-of-multiplicative-lstm/2328/5
-# https://discuss.pytorch.org/t/custom-rnn-implementation/2673
-# https://github.com/jihunchoi/recurrent-batch-normalization-pytorch/blob/master/bnlstm.py
-# https://discuss.pytorch.org/t/coding-rnn-from-scratch/2205
+# http://apaszke.github.io/lstm-explained.html
 import glob, unicodedata, string
 import torch
 from torch.autograd import Variable
@@ -26,11 +16,19 @@ class CharRNN(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
 
-        self.i2h = nn.Linear(input_size, hidden_size)
-        self.h2h = nn.Linear(hidden_size, hidden_size)
-        self.h2y = nn.Linear(hidden_size, output_size)
+        self.input2inputgate = nn.Linear(input_size, hidden_size)
+        self.input2forgetgate = nn.Linear(input_size, hidden_size)
+        self.input2outputgate = nn.Linear(input_size, hidden_size)
+        self.hidden2inputgate = nn.Linear(hidden_size, hidden_size)
+        self.hidden2forgetgate = nn.Linear(hidden_size, hidden_size)
+        self.hidden2outputgate = nn.Linear(hidden_size, hidden_size)
 
-    def forward(self, input, hidden):
+        self.input2state = nn.Linear(input_size, hidden_size)
+        self.hidden2state = nn.Linear(hidden_size, hidden_size)
+
+    def forward(self, input, hidden, state):
+
+
         hidden = F.tanh(self.i2h(input) + self.h2h(hidden))
         output = self.h2y(hidden)
         return output, hidden
