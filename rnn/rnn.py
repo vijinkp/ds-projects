@@ -7,6 +7,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import numpy as np
 import pickle
+import torch.nn.functional as F
 
 torch.manual_seed(777)
 

@@ -14,41 +14,41 @@ torch.manual_seed(856)
 
 class OccupancyDetectionNet(nn.Module):
 
-	def __init__(self, input_size, hidden_size, output_size, layer2_hidden_size = None):
-		super(OccupancyDetectionNet, self).__init__()
-		self.layer2_hidden_present = False
+    def __init__(self, input_size, hidden_size, output_size, layer2_hidden_size = None):
+        super(OccupancyDetectionNet, self).__init__()
+        self.layer2_hidden_present = False
 
-		if layer2_hidden_size is None:
-			self.fc1 = nn.Linear(input_size, hidden_size)
-			self.fc2 = nn.Linear(hidden_size, output_size)
-		else:
-			self.layer2_hidden_present = True
-			self.fc1 = nn.Linear(input_size, hidden_size)
-			self.fc2 = nn.Linear(hidden_size, layer2_hidden_size)
-			self.fc3 = nn.Linear(layer2_hidden_size, output_size)
+        if layer2_hidden_size is None:
+            self.fc1 = nn.Linear(input_size, hidden_size)
+            self.fc2 = nn.Linear(hidden_size, output_size)
+        else:
+            self.layer2_hidden_present = True
+            self.fc1 = nn.Linear(input_size, hidden_size)
+            self.fc2 = nn.Linear(hidden_size, layer2_hidden_size)
+            self.fc3 = nn.Linear(layer2_hidden_size, output_size)
 
-		self.relu = nn.ReLU()
-		self.out_act = nn.Sigmoid()
+        self.relu = nn.ReLU()
+        self.out_act = nn.Sigmoid()
 
-		# torch.nn.init.xavier_uniform_(self.fc1.weight, gain=1)
-		# torch.nn.init.constant(self.fc1.bias, 0.1)
-		# torch.nn.init.xavier_uniform_(self.fc2.weight, gain=1)
-		# torch.nn.init.constant(self.fc2.bias, 0.1)
+        # torch.nn.init.xavier_uniform_(self.fc1.weight, gain=1)
+        # torch.nn.init.constant(self.fc1.bias, 0.1)
+        # torch.nn.init.xavier_uniform_(self.fc2.weight, gain=1)
+        # torch.nn.init.constant(self.fc2.bias, 0.1)
 
-	def forward(self, x):
-		out = self.fc1(x)
-		out = self.relu(out)
-		out = self.fc2(out)
-		if self.layer2_hidden_present:
-			out = self.relu(out)
-			out = self.fc3(out)
-		out = self.out_act(out)
-		return out
+    def forward(self, x):
+        out = self.fc1(x)
+        out = self.relu(out)
+        out = self.fc2(out)
+        if self.layer2_hidden_present:
+            out = self.relu(out)
+            out = self.fc3(out)
+        out = self.out_act(out)
+        return out
 
 def percentage_accuracy(actuals, predicted):
-	return accuracy_score(actuals, predicted)
+    return accuracy_score(actuals, predicted)
 
-root_folder = '/home/vparambath/Desktop/iith/AML-Assignment'
+root_folder = '/Users/vijinkp/Documents/IITH/Sem4/Deep Learning/ds-projects/data/occupancy-detection'
 predictors = ["Temperature","Humidity","Light","CO2","HumidityRatio"]
 target_col = "Occupancy"
 train_file = 'train_data.txt'
@@ -85,48 +85,47 @@ loss_data = []
 train_error_data = []
 # Training
 for epoch in range(num_epochs):
-	net.train()
- 	for i, batch in enumerate(train_dataloader):
- 		data, target = Variable(batch['X'].float()), Variable(batch['Y'].float())
-		optimizer.zero_grad()
-		output = net(data)
-		loss = criterion(output, target)
-		loss.backward()
-		optimizer.step()
-		#scheduler.step()
+    net.train()
+    for i, batch in enumerate(train_dataloader):
+        data, target = Variable(batch['X'].float()), Variable(batch['Y'].float())
+        optimizer.zero_grad()
+        output = net(data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+        #scheduler.step()
+        loss_data.append(loss.data.item())
 
-		loss_data.append(loss.data.item())
+        if (i+1) % 10 == 0:
+            print ('Epoch [{0}/{1}], Step [{2}/{3}], Loss: {4}'.format(epoch+1, num_epochs, i+1, len(train_dataset)//batch_size, loss.data.item()))
 
-		if (i+1) % 10 == 0:
-			print ('Epoch [{0}/{1}], Step [{2}/{3}], Loss: {4}'.format(epoch+1, num_epochs, i+1, len(train_dataset)//batch_size, loss.data.item()))
+    # Training error at each epoch
+    net.eval()
+    train_actual = []
+    train_predicted = []
+    for j, train_batch in enumerate(train_dataloader):
+        train_data, train_target = Variable(train_batch['X'].float()), Variable(train_batch['Y'].float())
+        train_output = net(train_data)
 
-	# Training error at each epoch
-	net.eval()
-	train_actual = []
-	train_predicted = []
-	for j, train_batch in enumerate(train_dataloader):
-		train_data, train_target = Variable(train_batch['X'].float()), Variable(train_batch['Y'].float())
-		train_output = net(train_data)
-
-		train_actual = train_actual + list(train_target.numpy().reshape(-1))
-		train_predicted = train_predicted + list(train_output.data.numpy().reshape(-1))
-	train_predicted = np.round(train_predicted)
-	train_auc = roc_auc_score(train_actual, train_predicted)
-	train_accuracy = percentage_accuracy(train_actual, train_predicted)
-	train_error_data.append(1 - train_accuracy)
-	print('Training accuracy : {0}'.format(train_accuracy))
-	print('Training AUC : {0}'.format(train_auc))
+        train_actual = train_actual + list(train_target.numpy().reshape(-1))
+        train_predicted = train_predicted + list(train_output.data.numpy().reshape(-1))
+    train_predicted = np.round(train_predicted)
+    train_auc = roc_auc_score(train_actual, train_predicted)
+    train_accuracy = percentage_accuracy(train_actual, train_predicted)
+    train_error_data.append(1 - train_accuracy)
+    print('Training accuracy : {0}'.format(train_accuracy))
+    print('Training AUC : {0}'.format(train_auc))
 
 #print('Training error : {0}'.format(train_error_data))
 torch.save(net.state_dict(), 'occupancy_detnet.pkl')
 
 # Save loss data @ batch level
 with open('loss_data.pkl', 'wb') as fp:
-	pickle.dump(loss_data, fp)
+    pickle.dump(loss_data, fp)
 
 # Save train_error data @ epoch level
 with open('train_error_data.pkl', 'wb') as fp1:
-	pickle.dump(train_error_data, fp1)
+    pickle.dump(train_error_data, fp1)
 
 # plots
 #generate_train_epoch_plot(train_error_data, lr, base_accuracy, hidden_size)
@@ -136,11 +135,11 @@ net.eval()
 train_actual = []
 train_predicted = []
 for j, train_batch in enumerate(train_dataloader):
-	train_data, train_target = Variable(train_batch['X'].float()), Variable(train_batch['Y'].float())
-	train_output = net(train_data)
+    train_data, train_target = Variable(train_batch['X'].float()), Variable(train_batch['Y'].float())
+    train_output = net(train_data)
 
-	train_actual = train_actual + list(train_target.numpy().reshape(-1))
-	train_predicted = train_predicted + list(train_output.data.numpy().reshape(-1))
+    train_actual = train_actual + list(train_target.numpy().reshape(-1))
+    train_predicted = train_predicted + list(train_output.data.numpy().reshape(-1))
 
 precison, recall, thresholds = precision_recall_curve(train_actual, train_predicted)
 train_predicted = np.round(train_predicted)
@@ -158,11 +157,11 @@ test_dataloader = DataLoader(test_dataset, batch_size= batch_size, shuffle=False
 actual = []
 predicted = []
 for j, test_batch in enumerate(test_dataloader):
-	data, target = Variable(test_batch['X'].float()), Variable(test_batch['Y'].float())
-	output = net(data)
+    data, target = Variable(test_batch['X'].float()), Variable(test_batch['Y'].float())
+    output = net(data)
 
-	actual = actual + list(target.numpy().reshape(-1))
-	predicted = predicted + list(output.data.numpy().reshape(-1))
+    actual = actual + list(target.numpy().reshape(-1))
+    predicted = predicted + list(output.data.numpy().reshape(-1))
 
 precison, recall, thresholds = precision_recall_curve(actual, predicted)
 predicted = np.round(predicted)

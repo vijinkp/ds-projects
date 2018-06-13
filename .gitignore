@@ -103,3 +103,4 @@ ENV/
 # model files
 *.pth
 *.pkl
+.DS_Store

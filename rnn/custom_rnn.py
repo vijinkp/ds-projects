@@ -15,33 +15,28 @@ from torch.autograd import Variable
 import torch.nn as nn
 import numpy as np
 import pickle
+import torch.nn.functional as F
 
 torch.manual_seed(777)
 
 class CharRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, model="rnn", n_layers=1):
+    def __init__(self, input_size, hidden_size, output_size):
         super(CharRNN, self).__init__()
-        self.model = model.lower()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
-        self.n_layers = n_layers
 
-        self.l_in = nn.Linear(input_size, n_hidden)
-        self.l_hidden = nn.Linear(n_hidden, n_hidden)
-        self.l_out = nn.Linear(n_hidden, output_size)
+        self.i2h = nn.Linear(input_size, n_hidden)
+        self.h2h = nn.Linear(n_hidden, n_hidden)
+        self.h2y = nn.Linear(n_hidden, output_size)
 
     def forward(self, input, hidden):
-        batch_size = input.size(0)
-        output, hidden = self.rnn(input.view(1, batch_size, -1), hidden)
-        output = self.decoder(output.view(batch_size, -1))
+        hidden = F.tanh(self.i2h(input) + self.h2h(hidden))
+        output = self.h2y(hidden)
         return output, hidden
 
     def init_hidden(self, batch_size):
-        if self.model == "lstm":
-            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)),
-                    Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
-       	return Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size))
+       	return Variable(torch.zeros(batch_size, self.hidden_size))
 
 def char_tensor(string, vocab):
     tensor = np.zeros(len(string))
